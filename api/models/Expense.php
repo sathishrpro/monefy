@@ -109,6 +109,32 @@ class Expense
 		$statement->execute();
 	}
 
+	public function getUserExpenses($user_id, $start_date, $end_date)
+	{
+		//sanitize input
+		$this->user_id = htmlspecialchars(strip_tags($user_id));
+		$start_date = htmlspecialchars(strip_tags($start_date));
+		$end_date = htmlspecialchars(strip_tags($end_date));
+
+		$user_expenses_qry = "select e.amount, 
+							 b.amount as budget_amount, 
+							 ec.expense_category,
+							 e.recurring_cost_type_id,
+							 e.expense_date
+							 from expense e 
+							 join budget b on b.category_id = e.category_id
+							 join expense_categories ec on ec.expense_category_id=e.category_id
+							 where e.user_id=:user_id and
+							 e.expense_date between :start_date and :end_date";
+
+		$statement = $this->db_conn->prepare($user_expenses_qry);
+		$statement->bindParam(':user_id', $user_id);
+		$statement->bindParam(':start_date', $start_date);
+		$statement->bindParam(':end_date', $end_date);
+		$statement->execute();
+		return $statement->fetchAll(PDO::FETCH_ASSOC);
+	}
+
 	 
 
 }

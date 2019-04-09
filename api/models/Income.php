@@ -103,6 +103,27 @@ class Income
 		$statement->execute();
 	}
 
+	public function getTotalIncome($user_id, $start_date, $end_date)
+	{
+		$qry = "select sum(amount) as total_income from income where user_id=:user_id
+					   and  income_date between :start_date and :end_date";
+		$statement = $this->db_conn->prepare($qry);
+
+		//sanitize input
+		$this->user_id = htmlspecialchars(strip_tags($user_id));
+		$start_date = htmlspecialchars(strip_tags($start_date));
+		$end_date = htmlspecialchars(strip_tags($end_date));
+
+		$statement->bindParam(':user_id', $this->user_id);
+		$statement->bindParam(':start_date', $start_date);
+		$statement->bindParam(':end_date', $end_date);
+
+		$statement->execute();
+
+		return $statement->fetchColumn();
+
+	}
+
 	 
 
 }

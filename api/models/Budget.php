@@ -98,6 +98,24 @@ class Budget
 		$statement->execute();
 	}
 
+	public function getTotalBudget($user_id)
+	{
+		//sanitize input
+		$this->user_id = htmlspecialchars(strip_tags($user_id));
+		
+		$total_budget_qry = 'select sum(amount) from budget where user_id=:user_id';
+		$statement = $this->db_conn->prepare($total_budget_qry);
+		$statement->bindParam(':user_id', $user_id);
+		$statement->execute();
+		$total_budget = $statement->fetchColumn();
+		if($total_budget != null)
+		{
+			return $total_budget;
+		}
+		return 0;
+
+	}
+
 	 
 
 }
