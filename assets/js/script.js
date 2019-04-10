@@ -26,6 +26,11 @@ $(document).ready(function(){
  	if($('#dashboard-page').length){
  		dashboardPageReady();
  	}
+
+ 	$('#btnSignout').click(function(){
+ 		localStorage.clear();
+ 		window.location.href = "index.html";
+ 	})
  	
 })
 
@@ -372,6 +377,7 @@ function getDashboardAnalytics(datas){
 	    		 	generate_expense_charts(data.dashboard_data);
 	    		 	generate_budget_charts(data.dashboard_data);
 	    		 	generate_budget_exp_charts(data.dashboard_data);
+	    		 	set_budget_spent(data.dashboard_data);
 	    		 }
 	    	},
 	    	error: function (jqXhr, textStatus, errorMessage) {
@@ -482,42 +488,22 @@ function getDashboardAnalytics(datas){
 				$("table tbody").append(markup);
 
 			})
-			
 		})
-
-
-
-		// console.log(budget_label);
-
-// {
-// 		            label: 'Percentage',
-// 		            data: budget_percentage_data,
-// 		            backgroundColor: budget_color,
-// 		            borderWidth: 1
-// 		        },
-
-		// var ctx = document.getElementById('budgetExpChart').getContext('2d');
-		// var myBarChart = new Chart(ctx, {
-		//     type: 'bar',
-	 //      	data: {
-		//         labels: budget_label,
-		//         datasets: [
-		//         {
-		//             label: 'Budget',
-		//             data: budget_data,
-	 //             	fillColor: "rgba(255, 99, 132, 0.2)",
-		//             borderWidth: 1
-		//         },
-		//         {
-		//             label: 'Expence',
-		//             data: budget_expense,
-	 //             	fillColor: "green",
-		//             borderWidth: 1
-		//         },
-		//         ]
-		//     }
-		// });
 	}
+
+	function set_budget_spent(values){
+		var budgets = values.budget_expense_spent;
+		$('#total_budget').text(budgets.total_budget);
+		$('#total_expense').text(budgets.total_expense);
+		$('#total_income').text(budgets.total_income);
+		var range = budgets.budget_expense_spent_date;
+		console.log(range);
+		$('#date_range').text(range.start_date+' to '+range.end_date);
+
+		 
+	}
+
+
 	var dynamicColors = function() {
         var r = Math.floor(Math.random() * 255);
         var g = Math.floor(Math.random() * 255);
