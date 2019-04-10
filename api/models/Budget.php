@@ -29,8 +29,7 @@ class Budget
 		$this->user_id = htmlspecialchars(strip_tags($budget['user_id']));
 		$this->amount = htmlspecialchars(strip_tags($budget['amount']));
 		$this->category_id = htmlspecialchars(strip_tags($budget['category_id']));
-		
-		 
+ 		 
  		$statement->bindParam(':user_id', $this->user_id);
 		$statement->bindParam(':amount', $this->amount);
 		$statement->bindParam(':category_id', $this->category_id);
@@ -113,7 +112,26 @@ class Budget
 			return $total_budget;
 		}
 		return 0;
+	}
 
+	public function getUserBudgetCategories($user_id)
+	{
+		//sanitize input
+		$this->user_id = htmlspecialchars(strip_tags($user_id));
+
+		$user_not_added_budget_categories_qry = "select expense_category_id, expense_category 
+												 from expense_categories
+												 where expense_category_id not in 
+												 (select category_id from budget where user_id=:user_id)";
+		$statement = $this->db_conn->prepare($user_not_added_budget_categories_qry);
+		$statement->bindParam(':user_id', $user_id);
+		$statement->execute();
+		$expense_categories = $statement->fetchAll(PDO::FETCH_ASSOC);
+		if(!empty($expense_categories))
+		{
+			return $expense_categories;
+		}
+		return [];	
 	}
 
 	 

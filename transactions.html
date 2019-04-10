@@ -1,36 +1,98 @@
 <!DOCTYPE HTML>
 <html>
-<head></head>
-<body>
-	 <h1>Income/Expense Transaction Statement</h1>
-	 <div>
-	 	<div>
-	 		<form>
-	 			<label>Category</label>
-	 			<select>
-	 				 <option>Food</option>
-	 			</select>
-	 			<label>Amount</label>
-	 			 <input type="text" name="minAmount" value="1" >
-	 			 <input type="text" name="maxAmount" value="10000">
-	 			 <lable>Date</lable>
-	 			 <input type="date"  name="transactionDate" value="" >
-	 		</form>
-	 	</div>
-
-	 	<label>Total Records: </label>
-	 	 <table>
-	 	 	<thead>
-	 	 		<th>S.No.</th>
-	 	 		<th>Amount</th>
-	 	 		<th>Date</th>
-	 	 		<th>Category</th>
-	 	 		<th>Type</th>
-	 	 		<th>Edit</th>
-	 	 		<th>Delete</th>
-	 	 	</thead>
-	 	 </table>
-	 </div>
+<head>
+	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/popper.min.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
+</head>
+<body id="transaction-page">
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	  	<a class="navbar-brand" href="#">MONEFY</a>
+	  	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+	  		<ul class="navbar-nav mr-auto">
+	  			<li class="nav-item active">
+		        <a class="nav-link" href="dashboard.html">Dashboard <span class="sr-only">(current)</span></a>
+		      </li>
+		      <li class="nav-item active">
+		        <a class="nav-link" href="income.html">Income <span class="sr-only">(current)</span></a>
+		      </li>
+		       <li class="nav-item active">
+		        <a class="nav-link" href="expense.html">Expenses <span class="sr-only">(current)</span></a>
+		      </li>
+		      <li class="nav-item active">
+		        <a class="nav-link" href="budget.html">Budget <span class="sr-only">(current)</span></a>
+		      </li>
+		      <li class="nav-item active">
+		        <a class="nav-link" href="transactions.html">Transactions <span class="sr-only">(current)</span></a>
+		      </li>
+		    </ul>
+		  	<form class="form-inline my-2 my-lg-0" id="formSignin">
+	  			 
+				<input id="btnSignout" class="btn btn-success" type="button" name="login" value="Signout">
+		  	</form>
+		</div>
+	</nav>
+	<div class="jumbotron jumbotron-fluid">
+		<div class="container">
+			<h1>Income/Expense Transaction Statement</h1>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row" style="padding: 50px">
+		    	<div class="col">
+		    		<form id="formSignup">
+					<div class="form-row">
+						<div class="form-group col-md-3">
+							<label>Category</label> 
+							<select id="categories" class="custom-select">
+							</select>
+						</div>
+						<div class="form-group col-md-3">
+							<label>Amount</label>
+							<div class="row">
+								<input type="text" style="margin: 0px 10px;"  class="form-control col-md-5" name="amount" value="1" placeholder="Enter Min amount">
+								<input type="text" style="margin: 0px 10px"  class="form-control col-md-5" name="amount" value="10000" placeholder="Enter Max amount">
+							</div>
+							
+						</div>
+						<div class="form-group col-md-3">
+							<label>Date</label>
+						 	<input type="date" class="form-control" name="transactionDate" value="" >
+						</div>
+						<div class="form-group col-md-2">
+							<input style="margin: 30px 0px" type="button"  type="button" name="addExpense" value="Filter" class="btn btn-primary">
+						</div>
+					</div>
+				</form>
+		    	</div>
+	    	</div>
+    	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<h3>Total Records:</h3>
+				<table class="table table-striped">
+				  <thead>
+				    <tr>
+				      <th scope="col">Date</th>
+				      <th scope="col">Transaction Type</th>
+				      <th scope="col">Category</th>
+				      <th scope="col">Amount</th>
+				      <th scope="col">Recurring Cost Type</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				  </tbody>
+				</table>
+			</div>
+		</div>
+	 
+	</div>
+	<div class="jumbotron text-center" style="margin-bottom:0; padding: 20px;">
+	  <p>BudSys Services &copy; 2019</p>
+	</div>
+	<script src="assets/js/script.js"></script>
 </body>
 
 </html>

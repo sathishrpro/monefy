@@ -1,41 +1,86 @@
 <!DOCTYPE HTML>
 <html>
-<head></head>
+<head>
+	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/popper.min.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
+</head>
 <body>
-	<section>
-	<div>
-	<h3>Login</h3>
-	<form >
-		<label>User Name</label>
-		<input type="text" name="userName" value="" placeholder="Enter user name">
-		<label>Password</label>
-		<input type="password" name="pwd" value="" placeholder="Enter password">
-		<input type="button" name="login" value="Login">
-	</form>
-</div>
-<div>
-	<h3>Signup</h3>
-		<form >
-		<label>User Name</label>
-		<input type="text" name="userName" value="" placeholder="Enter user name">
-		<label>Password</label>
-		<input type="password" name="pwd" value="" placeholder="Enter password">
-		<label>Confirm password</label>
-		<input type="password" name="confirmPwd" value="" placeholder="Enter same password">
-		<input type="button" name="signup" value="Signup">
-	</form>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	  	<a class="navbar-brand" href="#">MONEFY</a>
+	  	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+	  		<ul class="navbar-nav mr-auto">
+		      <li class="nav-item active">
+		        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+		      </li>
+		    </ul>
+		  	<form class="form-inline my-2 my-lg-0" id="formSignin">
+	  			<!-- <label>User Name</label> -->
+				<input class="form-control mr-sm-2" type="text" name="user_name" value="" placeholder="Enter username">
+				<!-- <label>Password</label> -->
+				<input class="form-control mr-sm-2" type="password" name="password" value="" placeholder="Enter password">
+				<input id="btnLogin" class="btn btn-success" type="button" name="login" value="Login">
+		  	</form>
+		</div>
+	</nav>
+	<div class="jumbotron jumbotron-fluid">
+		<div class="container">
+			<h1>Budget Traking System</h1> 
+			<p>Manage your money to get out and stay out of debt</p> 
+		</div>
 	</div>
-</section>
-<section>
-	 <ul>
-	 	<li>Personal Monthly Budget</li>
-	 	<li>Add Expenses in 10+ categories</li>
-	 	<li>Add Recurring costs by daily, weekly, monthly</li>
-	 	<li>View all transactions</li>
-	 	<li>Search and filter transactions by date, category</li>
-	 	<li>Elegant Dashboard to view Income/Expense analytics</li>
-	 	</ul>
-	</section>
+	<div class="container">
+		<div class="row" style="padding: 50px">
+		    	<div class="col">
+		      	<ul class="list-group">
+				 	<li class="list-group-item">Personal Monthly Budget</li>
+				 	<li class="list-group-item">Add Expenses in 10 categories</li>
+				 	<li class="list-group-item">Add Recurring costs by daily, weekly</li>
+				 	<li class="list-group-item">View all transactions</li>
+				 	<li class="list-group-item">Search and filter transactions by date, category</li>
+				 	<li class="list-group-item">Elegant Dashboard to view Income, Expense & Budget analytics</li>
+			 	</ul>
+		    	</div>
+		    	<div class="col">
+		      	<h3>Signup</h3>
+		      	<p>Start with free trail. No Credit card required!.</p>
+				<form id="formSignup">
+					<div class="form-row">
+	    					<div class="form-group col-md-12">
+							<label>User Name</label>
+							<input type="text"  class="form-control"  name="user_name" value="" placeholder="Enter user name">
+							<small id="signup" class="form-text text-muted">We'll never share your email with anyone else.</small>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label>Password</label>
+							<input type="password" class="form-control"  name="password" value="" placeholder="Enter password">
+						</div>
+						<div class="form-group col-md-6">
+							<label>Confirm password</label>
+							<input type="password"  class="form-control" name="confirmPassword" value="" placeholder="Enter same password">
+						</div>
+					</div>
+					<small id="signup" class="form-text text-muted">By clicking Sign Up, you agree to our Terms, Data Policy and Cookie Policy. You may receive SMS notifications from us and can opt out at any time</small>
+					<button style="margin: 20px 0px" type="button" name="signup" id="btnSignup" class="btn btn-primary">Signup</button>
+					<p id="errorMsg"></p>
+				</form>
+		    	</div>
+	  	</div>
+	</div>
+	<div class="jumbotron text-center" style="margin-bottom:0; padding: 20px;">
+	  <p>Monefy</p>
+	</div>
+	<script src="assets/js/script.js"></script>
+	<script type="text/javascript">
+		var user = localStorage.getItem('user');
+		if(user){
+		window.location.href = 'dashboard.html';
+		} 
+	</script>
+
 </body>
 
 </html>

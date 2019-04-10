@@ -1,26 +1,88 @@
 <!DOCTYPE HTML>
 <html>
-<head></head>
-<body>
-	 <h1>Monthly Budget</h1>
-	 <div>
-	 	<h3>Set Budget</h3>
-	 	<label>Amount</label>
-	 	<input type="text" name="budgetAmount" value="0" placeholder="Enter amount">
-	 	<label>Category</label>
-	 	<select name="category">
-	 		<option>All</option>
-	 		<option>Food</option>
-	 	</select>
-
-	 </div>
-	 <div>
-	 	<h3>Monthly Budget Information</h3>
-	 	<table>
-	 		<thead><th>Category</th><th>Budget Amount</th></thead>
-	 		<tbody></tbody>
-	 	</table>
-	 </div>
+<head>
+	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/popper.min.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
+</head>
+<body id="budget-page">
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	  	<a class="navbar-brand" href="#">MONEFY</a>
+	  	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+	  		<ul class="navbar-nav mr-auto">
+	  			<li class="nav-item active">
+		        <a class="nav-link" href="dashboard.html">Dashboard <span class="sr-only">(current)</span></a>
+		      </li>
+		      <li class="nav-item active">
+		        <a class="nav-link" href="income.html">Income <span class="sr-only">(current)</span></a>
+		      </li>
+		       <li class="nav-item active">
+		        <a class="nav-link" href="expense.html">Expenses <span class="sr-only">(current)</span></a>
+		      </li>
+		      <li class="nav-item active">
+		        <a class="nav-link" href="budget.html">Budget <span class="sr-only">(current)</span></a>
+		      </li>
+		      <li class="nav-item active">
+		        <a class="nav-link" href="transactions.html">Transactions <span class="sr-only">(current)</span></a>
+		      </li>
+		    </ul>
+		  	<form class="form-inline my-2 my-lg-0" id="formSignin">
+	  			 
+				<input id="btnSignout" class="btn btn-success" type="button" name="login" value="Signout">
+		  	</form>
+		</div>
+	</nav>
+	<div class="jumbotron jumbotron-fluid">
+		<div class="container">
+			<h1>Monthly Budget</h1>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row" style="padding: 50px">
+		    	<div class="col">
+		    		<h3>Set Budget</h3>
+		    		<form id="formBudget">
+					<div class="form-row">
+						<div class="form-group col-md-3">
+							<label>Amount</label>
+							<input type="text"  class="form-control" name="amount" value="" placeholder="Enter amount">
+						</div>
+						<div class="form-group col-md-3">
+							<label>Category</label> 
+							<select id="categories" class="custom-select" name="category_id">
+							</select>
+						</div>
+						<div class="form-group col-md-3">
+							<input id="btnAdd" style="margin: 30px 0px" type="button"  type="button" name="addExpense" value="Set Budget" class="btn btn-primary">
+						</div>
+					</div>
+				</form>
+				<p id="errorMsg"></p>
+		    	</div>
+	    	</div>
+	    	<hr>
+	    	<div class="row" style="padding: 50px">
+		    	<div class="col">
+		    		<h3>Monthly Budget Information</h3>
+		    		<h5 id='total_budget' class='text-align-right'>Total Budget Amount: </h5>
+		    		<table class="table table-striped">
+				  <thead>
+				    <tr>
+				      <th scope="col">Category</th>
+				      <th scope="col">Budget</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				  </tbody>
+				</table>
+		    	</div>
+	    	</div>
+	</div>
+	<div class="jumbotron text-center" style="margin-bottom:0; padding: 20px;">
+	  <p>BudSys Services &copy; 2019</p>
+	</div>
+	<script src="assets/js/script.js"></script>
 </body>
 
 </html>

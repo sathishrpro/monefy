@@ -21,7 +21,8 @@ class Transactions
 						   ic.income_category as category,
 						   i.income_date as trans_date,
 						   i.created_at ,
-						   'I' as trans_type
+						   'I' as trans_type,
+						   'N/A' as recurring_cost_type
 						   from income i
 						   join income_categories ic on ic.income_category_id=i.category_id 
 						   where user_id=:user_id
@@ -31,20 +32,29 @@ class Transactions
 						   ec.expense_category as category,
 						   e.expense_date as trans_date,
 						   e.created_at,
-						   'E' as trans_type
+						   'E' as trans_type,
+						   recurring_cost_type
 				 		   from expense e
 				  		   join expense_categories ec on ec.expense_category_id=e.category_id
+				  		   join recurring_costs_type rct on rct.recurring_cost_type_id=e.recurring_cost_type_id
 				  		   where user_id=:user_id) 
 				  		   transactions ";
 
   		if(!empty($filter['trans_start_date']) && !empty($filter['trans_end_date']))
 		{
+			$filter['trans_start_date'] = htmlspecialchars(strip_tags($filter['trans_start_date']));
+			$filter['trans_end_date'] = htmlspecialchars(strip_tags($filter['trans_end_date']));
 			$qry .= " where trans_date between '"  . $filter['trans_start_date'] . "' and '" . $filter['trans_end_date'] . "'";
 		}
 
-		$qry .= " order by created_at desc";
- 
+		if(!empty($filter['category']))
+		{
+			$filter['category'] = htmlspecialchars(strip_tags($filter['category']));
+			$qry .= " category =" . $filter['category'];
+		}
 
+		$qry .= " order by created_at desc";
+  
 		$statement = $this->db_conn->prepare($qry);
 
 		//sanitize input
@@ -55,7 +65,7 @@ class Transactions
 		return $statement->fetchAll(PDO::FETCH_ASSOC);
 	}
 
-	public function getDashboardData($user_id, $month,$year)
+	public function getDashboardData($user_id, $start_date,$end_date)
 	{
 		$dashboard_data['total_income'] =0;
 		$dashboard_data['total_expense'] =0;
@@ -115,20 +125,18 @@ class Transactions
 		{
 			$dashboard_data['total_income_by_category'] = $total_income_by_category;	
 		}
- 		$dashboard_data['budget_expense_spent'] = $this->getBudgetExpenseSpent($user_id,$month,$year);
+ 		$dashboard_data['budget_expense_spent'] = $this->getBudgetExpenseSpent($user_id,$start_date,$end_date);
 		return $dashboard_data;
 	}
 
 
-	public function getBudgetExpenseSpent($user_id,$month, $year)
+	public function getBudgetExpenseSpent($user_id,$start_date, $end_date)
 	{
 		//sanitize input
 		$user_id = htmlspecialchars(strip_tags($user_id));
-		$month = htmlspecialchars(strip_tags($month));
-		$year = htmlspecialchars(strip_tags($year));
+		$start_date = htmlspecialchars(strip_tags($start_date));
+		$end_date = htmlspecialchars(strip_tags($end_date));
 
-		$start_date = $year . '-' . $month . '-' . '01';
-		$end_date = date('Y-m-t',strtotime($start_date));
 		$total_days = $this->dateDiffInDays($start_date, $end_date);
 		$total_months = $this->dateDiffInMonths($start_date, $end_date);
 		if($total_months==0) //given start and end date ends in same month
@@ -161,8 +169,13 @@ class Transactions
 		$budget_expense_spent_data['total_income'] = $total_income;
 
 		$user_budget = $budget->getAllForUser($user_id);
-		$budget_expense_spent_data['user_budget'] = $user_budget;
- 		
+		$user_budget_by_categories = [];
+		foreach ($user_budget as $key => $ub) {
+			$user_budget_by_categories[$ub['expense_category']] = $ub['amount'];
+		}
+ 		$budget_expense_spent_data['user_budget'] = $user_budget_by_categories;
+
+
  		$expense = new Expense($this->db_conn);
  		$user_expenses = $expense->getUserExpenses($user_id, $start_date, $end_date);
 
@@ -197,8 +210,54 @@ class Transactions
 			$user_expenses[$key]['total_expense'] = $total_expense;
 			$budget_expense_spent_data['total_expense'] += $total_expense;
 		}
+
+  		$user_expenses_by_month_year = [];
+		foreach ($user_expenses as $key => $uexp) {
+			$exp_month_year = $this->getMonthYearFromDate($uexp['expense_date']);
+			$user_expenses_by_month_year[$exp_month_year][] = $uexp;
+		} 
+
+		$user_expenses_by_month_year_category = [];
+		foreach ($user_expenses_by_month_year as $key => $uexp_monyr) {
+
+			$user_expense_by_category = [];
+			foreach ($uexp_monyr as $uexp_monyr_key => $uexp) {
+				$category = $uexp['expense_category'];
+				if(!isset($user_expense_by_category[$category]))
+				{
+					$user_expense_by_category[$category] = 0;
+				}
+				$user_expense_by_category[$category] +=   $uexp['total_expense'] ;
+			}
+			$user_expenses_by_month_year_category[$key] = $user_expense_by_category;
+		}
+
+		$user_budget_expenses = [];
+		foreach ($user_expenses_by_month_year_category as $monyr_key => $uexp_monyr) {
+			$user_budget_expense_by_category = [];
+			foreach ($uexp_monyr as $category_key => $uexp_by_category) {
+				$budget_amount = 0;
+
+				if(array_key_exists($category_key, $user_budget_by_categories))
+				{
+					$budget_amount = $user_budget_by_categories[$category_key];
+				}
+				$percentage_spent = 100;
+
+				if($budget_amount >0)
+				{
+					$percentage_spent = round(($uexp_by_category/$budget_amount) * 100);
+				}
+
+				$user_budget_expense_by_category[$category_key] = ['total_expense' => $uexp_by_category,
+																	'budget_amount'=> $budget_amount,
+																	'percentage_spent' => $percentage_spent 
+																  ];
+			}
+			$user_budget_expenses[$monyr_key] = $user_budget_expense_by_category;
+		}
  
-		$budget_expense_spent_data['budget_expense_by_category'] = $user_expenses;
+		$budget_expense_spent_data['user_budget_expenses'] = $user_budget_expenses;
 		return $budget_expense_spent_data;
 	}
 
@@ -227,6 +286,26 @@ class Transactions
 			$month2 = date('m', $ts2);
 
 			return (($year2 - $year1) * 12) + ($month2 - $month1);
+	}
+
+
+	public function monthYearFromTwoDates($date1, $date2)
+	{
+		$output = [];
+		$time   = strtotime($date1);
+		$last   = date('M-Y', strtotime($date2));
+
+		do {
+		    $month = date('M-Y', $time);
+ 		    $output[] = $month; 
+		    $time = strtotime('+1 month', $time);
+		} while ($month != $last);
+		return $output;
+	}
+
+	public function getMonthYearFromDate($date)
+	{
+		return date('M-Y', strtotime($date));
 	}
 
 

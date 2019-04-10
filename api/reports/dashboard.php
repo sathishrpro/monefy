@@ -15,12 +15,22 @@ $db = $database->getConnection();
 
 
 $user_id = $_GET['user_id'];
-$month = $_GET['month'];
-$year = $_GET['year'];
- 
+$start_date = date('Y-m-01');
+$end_date = date('Y-m-t');
+
+if(isset($_GET['start_date']))
+{
+	$start_date = $_GET['start_date'];
+}
+
+if(isset($_GET['end_date']))
+{
+	$end_date = $_GET['end_date'];
+}
+  
 
 $transactions = new Transactions($db);
-$dashboard_data = $transactions->getDashboardData($user_id, $month,$year);
+$dashboard_data = $transactions->getDashboardData($user_id, $start_date,$end_date);
  
 http_response_code(200);
 echo json_encode(['dashboard_data'=>$dashboard_data]);

@@ -117,13 +117,13 @@ class Expense
 		$end_date = htmlspecialchars(strip_tags($end_date));
 
 		$user_expenses_qry = "select e.amount, 
-							 b.amount as budget_amount, 
 							 ec.expense_category,
 							 e.recurring_cost_type_id,
+							 rct.recurring_cost_type,
 							 e.expense_date
 							 from expense e 
-							 join budget b on b.category_id = e.category_id
 							 join expense_categories ec on ec.expense_category_id=e.category_id
+							 join recurring_costs_type rct on rct.recurring_cost_type_id=e.recurring_cost_type_id
 							 where e.user_id=:user_id and
 							 e.expense_date between :start_date and :end_date";
 

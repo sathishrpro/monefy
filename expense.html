@@ -1,25 +1,84 @@
 <!DOCTYPE HTML>
 <html>
-<head></head>
-<body> 
-	<h1>Expense</h1>
-	<form>
-	<label>Amount</label>
-	<input type="text" name="amount" value="" placeholder="Enter amount">
-	<label>Category</label>
-	<select>
-		<option>Other</option>
-	</select>
-	<label>Recurring Cost</label>
-	<select>
-		<option>Once</option>
-		<option>Daily</option>
-		<option>Weekly</option>
-	</select>
-	<label>Date</label>
-	<input type="date" name="incomeDate" value="" placeholder="Select date">
-	<input type="button" name="addExpense" value="Add Expense">
-</form>
+<head>
+	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/popper.min.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
+</head>
+<body id="expense-page"> 
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	  	<a class="navbar-brand" href="#">MONEFY</a>
+	  	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+	  		<ul class="navbar-nav mr-auto">
+	  			<li class="nav-item active">
+		        <a class="nav-link" href="dashboard.html">Dashboard <span class="sr-only">(current)</span></a>
+		      </li>
+		      <li class="nav-item active">
+		        <a class="nav-link" href="income.html">Income <span class="sr-only">(current)</span></a>
+		      </li>
+		       <li class="nav-item active">
+		        <a class="nav-link" href="expense.html">Expenses <span class="sr-only">(current)</span></a>
+		      </li>
+		      <li class="nav-item active">
+		        <a class="nav-link" href="budget.html">Budget <span class="sr-only">(current)</span></a>
+		      </li>
+		      <li class="nav-item active">
+		        <a class="nav-link" href="transactions.html">Transactions <span class="sr-only">(current)</span></a>
+		      </li>
+		    </ul>
+		  	<form class="form-inline my-2 my-lg-0" id="formSignin">
+	  			 
+				<input id="btnSignout" class="btn btn-success" type="button" name="login" value="Signout">
+		  	</form>
+		</div>
+	</nav>
+	<div class="jumbotron jumbotron-fluid">
+		<div class="container">
+			<h1>Expense</h1>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row" style="padding: 50px">
+		    	<div class="col">
+
+		    	</div>
+		    	<div class="col">
+		    		<h3>Expense</h3>
+		      	<p>Add your Daily Expenses here!.</p>
+		    		<form id="formExpense">
+					<div class="form-row">
+							<div class="form-group col-md-12">
+							<label>Amount</label>
+							<input type="text"  class="form-control" name="amount" value="" placeholder="Enter amount">
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label>Category</label> 
+							<select id="categories" name="category_id" class="custom-select">
+							</select>
+						</div>
+						<div class="form-group col-md-6">
+							<label>Recurring Cost</label>
+							<select id="recurring_costs" name="recurring_cost_type_id" class="custom-select">
+							</select>
+						</div>
+						<div class="form-group col-md-6">
+							<label>Date</label>
+							<input type="date" name="expense_date" value="" placeholder="Select date" class="form-control">
+						</div>
+					</div>
+					<input style="margin: 20px 0px" type="button" id="btnAdd" name="addExpense" value="Add Expense" class="btn btn-primary">
+					<p id="errorMsg"></p>
+				</form>
+		    	</div>
+	    	</div>
+	</div>
+	<div class="jumbotron text-center" style="margin-bottom:0; padding: 20px;">
+	  <p>BudSys Services &copy; 2019</p>
+	</div>
+	<script src="assets/js/script.js"></script>
 </body>
 
 </html>

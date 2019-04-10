@@ -24,7 +24,11 @@ if(empty($budget_details))
 	echo json_encode(['message'=>'No budget information found.']);
 	return;
 }
+
+$budget_categories_amount = array_column($budget_details, 'amount');
+
+$total_budget = array_sum($budget_categories_amount);
  
 
 http_response_code(200);
-echo json_encode(['budget'=>$budget_details]);
+echo json_encode(['budget'=>$budget_details, 'total_budget'=>$total_budget]);
