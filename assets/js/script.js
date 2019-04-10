@@ -287,11 +287,22 @@ function transactionPageReady(){
 	    	timeout: 500,
 	    	success: function (data,status,xhr) {
 	    		 if(data && data.user_transactions && data.user_transactions.length > 0){
+	    		 	$('#totalRecords').text(data.user_transactions.length);
 	    		 	for(i in data.user_transactions) {
 	    		 		var transaction = data.user_transactions[i];
-	    		 		var markup = "<tr><td><b>" + transaction.trans_date + "</b></td><td><b>" + transaction.category 
-	    		 								   + "</b></td><td>" +  transaction.trans_type + "</td><td>"
-	    		 								   +  transaction.amount  + "</b></td><td>" + transaction.recurring_cost_type + "</td></tr>";
+	    		 		var trans_type = 'Income';
+	    		 		if(transaction.trans_type == 'E'){
+	    		 			trans_type = 'Expense';
+	    		 		}
+	    		 		var markup =   `<tr>
+	    		 					  	<td><b>` + transaction.trans_date + `</b></td>
+	    		 					  	<td><b>` + transaction.category + `</b></td>
+ 								   		<td>` +  trans_type + `</td>
+ 								   		<td>`+  transaction.amount  + `</td>
+ 								   		<td>` + transaction.recurring_cost_type + `</td>
+ 								   		<td>
+ 								   			<button class="btn btn-danger" onclick='deleteTransaction("`+transaction.trans_type+`",`+transaction.id+`)'>Delete</button>
+ 								   		</td></tr>`;
             			$("table tbody").append(markup);
 	    		 	}
 	    		 }
@@ -302,10 +313,21 @@ function transactionPageReady(){
 	});
 }
 
-function dashboardPageReady(){
-	
-	var datas = {user_id:user.user_id};
-	$.ajax('api/reports/dashboard.php', 
+function editTransaction(trans_type,trans_id) {
+	console.log('Edit'+trans_id);
+}
+
+function deleteTransaction(trans_type,trans_id) {
+
+	var datas = {income_id:trans_id};
+	var url = 'api/income/delete.php';
+
+	if(trans_type == 'E'){
+		datas = {expense_id:trans_id};
+		url = 'api/expense/delete.php';
+	}
+
+	$.ajax(url, 
 	{	
 		type:'get',
 		data:datas,
@@ -321,3 +343,184 @@ function dashboardPageReady(){
 	    	}
 	});
 }
+
+function dashboardPageReady(){
+	var dashboard_data = '';
+	var datas = {user_id:user.user_id,start_date:'2019-01-01'};
+	getDashboardAnalytics(datas);
+	$('#btnFilter').click(function(){
+		var datas = [];
+		$.each($("#formDashboardFilter").serializeArray(),function(key,val){
+			datas.push(val);
+		})
+		datas.push({name:'user_id',value:user.user_id});
+		getDashboardAnalytics(datas);
+	})
+}
+
+function getDashboardAnalytics(datas){
+
+	$.ajax('api/reports/dashboard.php', 
+	{	
+		type:'get',
+		data:datas,
+   	 	dataType: 'json',
+	    	timeout: 500,
+	    	success: function (data,status,xhr) {
+	    		 if(data){
+	    		 	generate_income_charts(data.dashboard_data);
+	    		 	generate_expense_charts(data.dashboard_data);
+	    		 	generate_budget_charts(data.dashboard_data);
+	    		 	generate_budget_exp_charts(data.dashboard_data);
+	    		 }
+	    	},
+	    	error: function (jqXhr, textStatus, errorMessage) {
+	        $('#errorMsg').text('Error: ' + errorMessage);
+	    	}
+	});
+}
+
+	function generate_income_charts(values){
+		var incomes = values.total_income_by_category;
+		var income_data = [];
+		var income_label = [];
+		var income_color = [];
+		$.each(incomes,function(index,value) {
+			income_data.push(value.total_income);
+			income_label.push(value.income_category);
+			income_color.push(dynamicColors());
+		})
+		var ctx = document.getElementById('incomeChart').getContext('2d');
+		var myPieChart = new Chart(ctx, {
+		    type: 'pie',
+		    data:  {
+			    datasets: [{
+			        data: income_data,
+			        backgroundColor: income_color,
+			    }],
+			    labels: income_label
+			}
+		});
+
+
+
+	}
+	function generate_expense_charts(values){
+		var expenses = values.total_expense_by_category;
+		var expense_data = [];
+		var expense_label = [];
+		var expense_color = [];
+		$.each(expenses,function(index,value) {
+			expense_data.push(value.total_expense);
+			expense_label.push(value.expense_category);
+			expense_color.push(dynamicColors());
+		})
+		var ctx = document.getElementById('expenseChart').getContext('2d');
+		var myPieChart = new Chart(ctx, {
+		    type: 'pie',
+		    data:  {
+			    datasets: [{
+			        data: expense_data,
+			        backgroundColor: expense_color,
+			    }],
+			    labels: expense_label
+			}
+		});
+	}
+
+	function generate_budget_charts(values){
+		var budgets = values.budget_expense_spent.user_budget;//values.budget_expense_spent.user_budget_expenses;
+		var budget_data = [];
+		var budget_label = [];
+		var budget_color = [];
+		$.each(budgets,function(index,value) {
+			budget_data.push(value);
+			budget_label.push(index);
+			budget_color.push(dynamicColors());
+		})
+
+
+		var ctx = document.getElementById('budgetChart').getContext('2d');
+		var myBarChart = new Chart(ctx, {
+		    type: 'bar',
+	      	data: {
+		        labels: budget_label,
+		        datasets: [{
+		            label: 'Budget',
+		            data: budget_data,
+		            backgroundColor: budget_color,
+		            borderWidth: 1
+		        }]
+		    },
+		    options: {
+		        scales: {
+		            yAxes: [{
+		                ticks: {
+		                    beginAtZero: true
+		                }
+		            }]
+		        }
+		    }
+		});
+	}
+
+	function generate_budget_exp_charts(values){
+		$("table tbody").empty();
+		var budgets = values.budget_expense_spent.user_budget_expenses;
+		 
+		$.each(budgets,function(index,value) {
+			$.each(value,function(i,v) {
+				 
+
+				var markup =   `<tr>
+						  	<td><b>` + index + `</b></td>
+						  	<td><b>` + i + `</b></td>
+					   		<td>` +  v.budget_amount + `</td>
+					   		<td>`+  v.total_expense  + `</td>
+					   		<td>` + v.percentage_spent + `%</td>
+					   		 </tr>`;
+				$("table tbody").append(markup);
+
+			})
+			
+		})
+
+
+
+		// console.log(budget_label);
+
+// {
+// 		            label: 'Percentage',
+// 		            data: budget_percentage_data,
+// 		            backgroundColor: budget_color,
+// 		            borderWidth: 1
+// 		        },
+
+		// var ctx = document.getElementById('budgetExpChart').getContext('2d');
+		// var myBarChart = new Chart(ctx, {
+		//     type: 'bar',
+	 //      	data: {
+		//         labels: budget_label,
+		//         datasets: [
+		//         {
+		//             label: 'Budget',
+		//             data: budget_data,
+	 //             	fillColor: "rgba(255, 99, 132, 0.2)",
+		//             borderWidth: 1
+		//         },
+		//         {
+		//             label: 'Expence',
+		//             data: budget_expense,
+	 //             	fillColor: "green",
+		//             borderWidth: 1
+		//         },
+		//         ]
+		//     }
+		// });
+	}
+	var dynamicColors = function() {
+        var r = Math.floor(Math.random() * 255);
+        var g = Math.floor(Math.random() * 255);
+        var b = Math.floor(Math.random() * 255);
+        return "rgb(" + r + "," + g + "," + b + ")";
+     };

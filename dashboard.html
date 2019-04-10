@@ -2,9 +2,12 @@
 <html>
 <head>
 	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="assets/css/Chart.min">
 	<script src="assets/js/jquery.min.js"></script>
 	<script src="assets/js/popper.min.js"></script>
 	<script src="assets/js/bootstrap.min.js"></script>
+	<script src="assets/js/Chart.bundle.min.js"></script>
+
 </head>
 	<body id="dashboard-page">
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -38,9 +41,89 @@
 			<h1>Dashboard</h1>
 		</div>
 	</div>
+	<div class="container">
+		<div class="row" style="padding: 50px">
+	    	<div class="col">
+	    		<form id="formDashboardFilter">
+				<div class="form-row">
+					<div class="form-group col-md-3">
+						<label>Start Date</label>
+					 	<input type="date" class="form-control" name="start_date" value="2019-01-01" >
+					</div>
+					<div class="form-group col-md-3">
+						<label>End Date</label>
+					 	<input type="date" class="form-control" name="end_date" value="" >
+					</div>
+					<div class="form-group col-md-2">
+						<input style="margin: 30px 0px" id="btnFilter" type="button"  type="button"  value="Filter" class="btn btn-primary">
+					</div>
+				</div>
+			</form>
+	    	</div>
+    	</div>
+	</div>
+	<div class="container" style="margin-bottom: 50px;">
+		<div class="row">
+			<div class="col-md-8">
+				<div class="card">
+					<div class="card-body">
+    					<h5 class="card-title">Budget Expenses Allocation</h5>
+						<!-- <canvas id="budgetExpChart" width="200" height="100"></canvas> -->
+						<table class="table table-striped">
+						  <thead>
+						    <tr>
+						      <th scope="col">Month</th>
+						      <th scope="col">Category</th>
+						      <th scope="col">Budget</th>
+						      <th scope="col">Total Expense</th>
+				       		  <th scope="col">Percentage Spent</th>
+						    </tr>
+						  </thead>
+						  <tbody>
+						  </tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container" style="margin-bottom: 50px;">
+		<div class="row">
+			<div class="col-md-8">
+				<div class="card">
+					<div class="card-body">
+    					<h5 class="card-title">Budget Allocation</h5>
+						<canvas id="budgetChart" width="200" height="100"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container" style="margin-bottom: 50px;">
+		<div class="row">
+			<div class="col-md-6">
+				<div class="card">
+					<div class="card-body">
+    					<h5 class="card-title">Income Analytics</h5>
+						<canvas id="incomeChart" width="200" height="100"></canvas>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="card">
+					<div class="card-body">
+    					<h5 class="card-title">Expense Analytics</h5>
+						<canvas id="expenseChart" width="200" height="100"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
 	<div class="jumbotron text-center" style="margin-bottom:0; padding: 20px;">
 	  <p>BudSys Services &copy; 2019</p>
 	</div>
+	<script src="assets/js/script.js"></script>
 
 </body>
 </html>
